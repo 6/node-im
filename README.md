@@ -28,7 +28,7 @@ Install node package dependencies
 
     npm install
 
-Chmod and move upstart conf file to the correct directory
+Modify the upstart conf file to point to this directory (see line 11 of `node-im.conf`). Then, chmod and move upstart conf file to the correct directory
 
     chmod u+x node-im.conf
     sudo mv node-im.conf /etc/init/
