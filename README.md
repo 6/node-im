@@ -6,7 +6,7 @@ Install expat libraries
 
 Install upstart
 
-   sudo apt-get install upstart
+    sudo apt-get install upstart
 
 Install [Node.JS](http://nodejs.org) and [NPM](http://npmjs.org/)
 
