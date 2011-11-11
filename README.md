@@ -4,7 +4,15 @@ Install expat libraries
 
     sudo apt-get install libexpat1 libexpat1-dev
 
+Install upstart
+
+   sudo apt-get install upstart
+
 Install [Node.JS](http://nodejs.org) and [NPM](http://npmjs.org/)
+
+Also, install CoffeeScript globally with NPM:
+
+    npm -g install coffee-script
 
 Installation
 ============
@@ -20,6 +28,23 @@ Install node package dependencies
 
     npm install
 
-Running the application
-=======================
-TODO
+Chmod and move upstart conf file to the correct directory
+
+    chmod u+x node-im.conf
+    sudo mv node-im.conf /etc/init/
+
+Usage
+=====
+Starting/stopping the application is very easy with upstart.
+
+To start
+
+    sudo start node-im
+
+To stop
+
+    sudo stop node-im
+
+To see the status
+
+    sudo status node-im
