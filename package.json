@@ -15,6 +15,7 @@
     ,"express": "2.5.0"
     ,"jade": "0.17.0"
     ,"stylus": "0.19.2"
+    ,"tav": "0.1.0"
   },
   "devDependencies": {}
 }

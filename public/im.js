@@ -1,23 +1,12 @@
-var conn = new JSJaCHttpBindingConnection({
-  httpbase: '/fbchat'
-  ,timerval: 2000
-});
-
+var conn = null;
 var logged_in = false;
-
-/* TODO
-  conn.connect({
-    authtype: 'x-facebook-platform'
-    ,facebookApp: app
-  });  
-*/
+var app_id = '217811734953910';
 
 window.fbAsyncInit = function() {
   FB.init({
-    appId: '217811734953910'
+    appId: app_id
     ,status: true
     ,cookie: true
-    ,xfbml: true
     ,oauth: true
   });
 
@@ -26,6 +15,7 @@ window.fbAsyncInit = function() {
   FB.Event.subscribe('auth.statusChange', updateStatus);
   $("#fb-auth").click(fb_login);
   $("#fb-logout").click(fb_logout);
+  conn = new Strophe.Connection('http://107.22.171.171:5280/http-bind/');
 };
 
 fb_login = function() {
@@ -58,6 +48,7 @@ updateStatus = function(response) {
     toggleLoginHtml(false);
     setUserInfo(response.authResponse.userID);
     logged_in = true;
+    fb_server_challenge(response.authResponse);
   }
   else if(!logged_in){
     //user is not connected to your app or logged out
@@ -76,4 +67,27 @@ toggleLoginHtml = function(show_bool) {
     $("#fb-logout").show(0);
     $("#user-info").show(0);
   }
+};
+
+fb_server_challenge = function(info) {
+  var jid = info.userID+"@chat.facebook.com";
+  console.log("Connecting as: "+jid);
+  conn.facebookConnect(
+    jid
+    ,on_fb_chat_connect
+    ,60
+    ,1
+    ,app_id
+    ,null
+    ,info.accessToken
+  );
+}
+
+on_fb_chat_connect = function(status) {
+  console.log("okay");
+  if(status == Strophe.Status.CONNECTING) console.log("connecting");
+  else if(status == Strophe.Status.CONNFAIL) console.log("confail");
+  else if(status == Strophe.Status.DISCONNECTING) console.log("disconnecting");
+  else if(status == Strophe.Status.DISCONNECTED) console.log("disconnected");
+  else if(status == Strophe.Status.CONNECTED) console.log("CONNECTED");
 };
