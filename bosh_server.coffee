@@ -1,5 +1,6 @@
 """
 Basic BOSH server using node-xmpp-bosh package.
+This converts stateful XMPP sessions to stateless HTTP sessions.
 
 For more information on BOSH, see here:
 http://xmpp.org/extensions/xep-0124.html
