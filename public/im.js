@@ -84,10 +84,31 @@ fb_server_challenge = function(info) {
 }
 
 on_fb_chat_connect = function(status) {
-  console.log("okay");
   if(status == Strophe.Status.CONNECTING) console.log("connecting");
   else if(status == Strophe.Status.CONNFAIL) console.log("confail");
   else if(status == Strophe.Status.DISCONNECTING) console.log("disconnecting");
   else if(status == Strophe.Status.DISCONNECTED) console.log("disconnected");
-  else if(status == Strophe.Status.CONNECTED) console.log("CONNECTED");
+  else if(status == Strophe.Status.CONNECTED){
+    console.log("CONNECTED");
+    conn.addHandler(on_fb_message, null, 'message', null, null,  null);
+    conn.send($pres().tree()); // presence stanza
+  }
+};
+
+on_fb_message = function(msg) {
+  var from_id = msg.getAttribute("from").split("@")[0].substring(1);
+  var type = msg.getAttribute("type");
+  var text = Strophe.getText(msg.getElementsByTagName("body")[0]);
+  console.log("Type:"+type+" From:"+from);
+  if(msg.getElementsByTagName("composing").length > 0) {
+    console.log("Typing...");
+  }
+  else if(text.length > 0){
+    console.log(text);
+  }
+  return true; // keep handler alive
+};
+
+on_fb_send = function() {
+  //TODO
 };
