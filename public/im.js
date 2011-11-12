@@ -99,7 +99,7 @@ on_fb_message = function(msg) {
   var from_id = msg.getAttribute("from").split("@")[0].substring(1);
   var type = msg.getAttribute("type");
   var text = Strophe.getText(msg.getElementsByTagName("body")[0]);
-  console.log("Type:"+type+" From:"+from);
+  console.log("Type:"+type+" From:"+from_id);
   if(msg.getElementsByTagName("composing").length > 0) {
     console.log("Typing...");
   }
