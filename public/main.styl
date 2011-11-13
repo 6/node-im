@@ -1,5 +1,123 @@
+clearfix()
+  zoom 1
+  &:after
+    clear both
+  &:before, &:after
+    content ""
+    display table
+
+center()
+  margin 0 auto
+left()
+  float left
+right()
+  float right
+
+round()
+  -webkit-border-radius arguments
+  -moz-border-radius arguments
+  border-radius arguments
+
+b-shadow() // x, y, blur, color
+  -moz-box-shadow arguments
+  -webkit-box-shadow arguments
+  box-shadow arguments
+
+vertical-gradient(start-color, end-color)
+  background-color start-color
+  background-image -moz-linear-gradient(top, start-color, end-color)
+  background-image -ms-linear-gradient(top, start-color, end-color)
+  background-image -o-linear-gradient(top, start-color, end-color)
+  background-image -webkit-gradient(linear, 0% 0%, 0% 100%, from(start-color), to(end-color))
+  background-image -webkit-gradient(linear, left top, left bottom, from(start-color), to(end-color))
+  -ms-filter unquote("progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr='"+start-color+"', endColorstr='"+end-color+"')")
+
+overflow()
+  overflow hidden
+  white-space nowrap
+  text-overflow ellipsis
+  -o-text-overflow ellipsis
+scrollable()
+  overflow scroll
+  overflow-y scroll
+  overflow-x hidden
+
 body
-  background #eee
+  background #f7f7ff
+  font-family 'Open Sans' sans-serif
 
 .hidden
   display none
+
+full-width = 550px
+chat-width = 350px
+friends-width = full-width - chat-width - 1
+bottom-height = 270px
+
+#container
+  center()
+  b-shadow 0 0 5px #ccc//#cdd
+  border 1px solid #bbc
+  width full-width
+  margin-top 30px
+  #top
+    border-bottom 1px solid #eef
+    background #e4e4ea//#fcfcff
+    #user-info
+      display inline
+      width chat-width
+      color #779
+      font-weight 400
+      font-size 35px
+      text-shadow 0 1px 1px #fff
+  #bottom
+    clearfix()
+    border-top 1px solid #bbc
+    background #fff
+
+#friends-wrap
+  left()
+  width friends-width
+  #friends
+    scrollable()
+    height bottom-height
+    .friend
+      border-bottom 1px solid #cde
+      border-top 1px solid #fff
+      cursor pointer
+      background #f9f9ff
+      &:hover
+        background #fcfcff
+    .active
+       vertical-gradient #78e #67d
+       color #fff
+       border-color #56a
+       &:hover
+         vertical-gradient #78e #67d
+
+message-input-height = 37px
+#chat-wrap
+  left()
+  width chat-width
+  border-left 1px solid #bbc
+  #chat
+    scrollable()
+    height bottom-height - message-input-height
+    border-bottom 1px solid #bbc
+  #message-input-wrap
+    border-top 1px solid #eef
+    height message-input-height
+    background #e4e4ea
+    text-align center
+    #message-input
+      margin-top 4px
+      font-size 12px
+      padding 6px 7px
+      width 86%
+      border 1px solid #bbc
+      round(13px)
+      b-shadow inset rgba(0,0,0,0.3) 0px 0px 2px
+      &:focus
+        outline none
+        border-color #99a
+      

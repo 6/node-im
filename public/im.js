@@ -1,6 +1,7 @@
 var conn = null;
 var logged_in = false;
 var app_id = '217811734953910';
+var recipient_fb_id = null;
 
 window.fbAsyncInit = function() {
   FB.init({
@@ -24,7 +25,7 @@ fb_login = function() {
       //user cancelled login or did not grant authorization
       alert("CANCEL");
     }
-  }, {scope: 'email,xmpp_login'});
+  }, {scope: 'email,xmpp_login,friends_online_presence'});
 };
 
 fb_logout = function() {
@@ -33,10 +34,29 @@ fb_logout = function() {
 };
 
 setUserInfo = function(userID) {
-  $("#user-info").html('<img src="https://graph.facebook.com/'+userID+'/picture" width=30>');
+  $("#user-info").html('<img src="'+avatar(userID)+'">');
   FB.api('/me', function(res) {
     $("#user-info").append(res.name);
     alert("TODO find/create:"+userID+","+res.email+","+res.name);
+  });
+  FB.api('/me/friends', function(res) {
+    $.each(res.data, function(i, v) {
+      add_fb_friend(v.id, v.name);
+    });
+  });
+};
+
+avatar = function(user_id) {
+  return "https://graph.facebook.com/"+user_id+"/picture";
+};
+
+add_fb_friend = function(user_id, name) {
+  $("#friends").append('<div class=friend id="friend_'+user_id+'"><img src="'+avatar(user_id)+'" width=20>'+name+'</div>');
+  $("#friend_"+user_id).click(function() {
+    $(".active").removeClass("active");
+    $(this).addClass("active");
+    console.log("speaking with "+name);
+    recipient_fb_id = user_id;
   });
 };
 
@@ -91,6 +111,12 @@ on_fb_chat_connect = function(status) {
   else if(status == Strophe.Status.CONNECTED){
     console.log("CONNECTED");
     conn.addHandler(on_fb_message, null, 'message', null, null,  null);
+    $("#message-input").keypress(function(e) {
+      if(e.which == 13) {
+        if(on_fb_send())
+          $("#message-input").val("");
+      }
+    });
     conn.send($pres().tree()); // presence stanza
   }
 };
@@ -110,5 +136,20 @@ on_fb_message = function(msg) {
 };
 
 on_fb_send = function() {
-  //TODO
+  if(!recipient_fb_id) {
+    console.log("Please select a person to chat with");
+    return false;
+  }
+  if(!$("#message-input").val()) {
+    console.log("Please enter a message first");
+    return false;
+  }
+  var to = '-'+recipient_fb_id+'@chat.facebook.com'; 
+  var text = $("#message-input").val();
+  console.log("Send "+text+" TO "+to);
+  
+  var message = $msg({to: to,type: 'chat'})
+    .cnode(Strophe.xmlElement('body', text));
+  conn.send(message.tree());
+  return true;
 };

@@ -4,6 +4,7 @@ html(xmlns:fb="https://www.facebook.com/2008/fbml")
     title Hello
     meta(charset='utf-8')
     link(rel='stylesheet', href='/lib/normalize.css')
+    link(rel='stylesheet', href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,700')
     link(rel='stylesheet', href='/main.css')
     script(type='text/javascript', src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js')
     script(type='text/javascript', src='/lib/strophe.js')
@@ -11,9 +12,17 @@ html(xmlns:fb="https://www.facebook.com/2008/fbml")
     script(type='text/javascript', src='/im.js')
   body
     #container
-      button#fb-auth.hidden Login with Facebook
-      button#fb-logout.hidden Logout
-      #user-info.hidden
+      #top
+        button#fb-auth.hidden Login with Facebook
+        button#fb-logout.hidden Logout
+        #user-info.hidden
+      #bottom
+        #friends-wrap
+          #friends
+        #chat-wrap
+          #chat chats go here
+          #message-input-wrap
+            input#message-input(type="text", placeholder="enter a message")
     #fb-root
     script
       (function() {
