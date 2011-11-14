@@ -13,14 +13,14 @@ html(xmlns:fb="https://www.facebook.com/2008/fbml")
   body
     #container
       #top
+        #user-info.hidden
         button#fb-auth.hidden Login with Facebook
         button#fb-logout.hidden Logout
-        #user-info.hidden
-      #bottom
+      #bottom.hidden
         #friends-wrap
           #friends
         #chat-wrap
-          #chat chats go here
+          #chat
           #message-input-wrap
             input#message-input(type="text", placeholder="enter a message")
     #fb-root

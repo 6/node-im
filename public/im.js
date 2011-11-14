@@ -1,7 +1,8 @@
 var conn = null;
-var logged_in = false;
+var fb_user_id = false;
 var app_id = '217811734953910';
 var recipient_fb_id = null;
+var chats_history = {};
 
 window.fbAsyncInit = function() {
   FB.init({
@@ -29,15 +30,15 @@ fb_login = function() {
 };
 
 fb_logout = function() {
-  logged_in = false;
+  fb_user_id = false;
   FB.logout(function(response){});
 };
 
-setUserInfo = function(userID) {
-  $("#user-info").html('<img src="'+avatar(userID)+'">');
+setUserInfo = function() {
+  $("#user-info").html('<img src="'+avatar(fb_user_id)+'">');
   FB.api('/me', function(res) {
     $("#user-info").append(res.name);
-    alert("TODO find/create:"+userID+","+res.email+","+res.name);
+    //alert("TODO find/create:"+userID+","+res.email+","+res.name);
   });
   FB.api('/me/friends', function(res) {
     $.each(res.data, function(i, v) {
@@ -51,26 +52,31 @@ avatar = function(user_id) {
 };
 
 add_fb_friend = function(user_id, name) {
-  $("#friends").append('<div class=friend id="friend_'+user_id+'"><img src="'+avatar(user_id)+'" width=20>'+name+'</div>');
+  $("#friends").append('<div class=friend id="friend_'+user_id+'"><img src="'+avatar(user_id)+'"><span>'+name+'</span></div>');
   $("#friend_"+user_id).click(function() {
     $(".active").removeClass("active");
     $(this).addClass("active");
-    console.log("speaking with "+name);
     recipient_fb_id = user_id;
+    // remove current messages & restore any previous messages
+    $("#chat").html("");
+    if(chats_history[recipient_fb_id]) {
+      $.each(chats_history[recipient_fb_id], function(i, v) {
+        var id = v.is_sender ? fb_user_id : recipient_fb_id;
+        add_chat(id, v.text);
+      });
+    }
   });
 };
 
-var resp = null; // TODO
 updateStatus = function(response) {
-  if(response.authResponse && !logged_in) {
-    resp = response.authResponse; // TODO expiresIn or offline_access
+  if(response.authResponse && !fb_user_id) {
     //user is already logged in and connected
     toggleLoginHtml(false);
-    setUserInfo(response.authResponse.userID);
-    logged_in = true;
-    fb_server_challenge(response.authResponse);
+    fb_user_id = response.authResponse.userID;
+    setUserInfo();
+    fb_server_challenge(response.authResponse.accessToken);
   }
-  else if(!logged_in){
+  else if(!fb_user_id){
     //user is not connected to your app or logged out
     toggleLoginHtml(true);
   }
@@ -81,17 +87,22 @@ toggleLoginHtml = function(show_bool) {
     $("#fb-auth").show(0);
     $("#fb-logout").hide(0);
     $("#user-info").hide(0);
+    $("#bottom").slideUp(400, function() {
+      $("#friends").html("");
+      $("#chat").html("");
+      chats_history = {};
+    });
   }
   else {
     $("#fb-auth").hide(0);
     $("#fb-logout").show(0);
     $("#user-info").show(0);
+    $("#bottom").slideDown(400);
   }
 };
 
-fb_server_challenge = function(info) {
-  var jid = info.userID+"@chat.facebook.com";
-  console.log("Connecting as: "+jid);
+fb_server_challenge = function(access_token) {
+  var jid = fb_user_id+"@chat.facebook.com";
   conn.facebookConnect(
     jid
     ,on_fb_chat_connect
@@ -99,7 +110,7 @@ fb_server_challenge = function(info) {
     ,1
     ,app_id
     ,null
-    ,info.accessToken
+    ,access_token
   );
 }
 
@@ -126,11 +137,28 @@ on_fb_message = function(msg) {
   var type = msg.getAttribute("type");
   var text = Strophe.getText(msg.getElementsByTagName("body")[0]);
   console.log("Type:"+type+" From:"+from_id);
+  var is_typing = false;
   if(msg.getElementsByTagName("composing").length > 0) {
     console.log("Typing...");
+    is_typing = true;
   }
   else if(text.length > 0){
     console.log(text);
+  }
+
+  if(!is_typing){
+    save_message(from_id, false, text);
+  }
+  if(from_id === recipient_fb_id) {
+    if(is_typing) {
+      //TODO show some indicator
+    }
+    else {
+      add_chat(from_id, text);
+    }
+  }
+  else {
+    //TODO: some sort of notification?
   }
   return true; // keep handler alive
 };
@@ -151,5 +179,19 @@ on_fb_send = function() {
   var message = $msg({to: to,type: 'chat'})
     .cnode(Strophe.xmlElement('body', text));
   conn.send(message.tree());
+
+  save_message(recipient_fb_id, true, text);
+  add_chat(fb_user_id, text);
   return true;
+};
+
+save_message = function(id, is_sender, text) {
+  if(!chats_history[id]) {
+    chats_history[id] = [];
+  }
+  chats_history[id].push({is_sender:is_sender, text:text});
+};
+
+add_chat = function(sender_id, text) {
+  $("#chat").append('<div class=message><img src="'+avatar(sender_id)+'"><span>'+text+'</span></div>');
 };

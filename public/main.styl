@@ -68,8 +68,13 @@ bottom-height = 270px
       width chat-width
       color #779
       font-weight 400
-      font-size 35px
+      font-size 25px
       text-shadow 0 1px 1px #fff
+      img
+        vertical-align middle
+        padding-right 20px
+    #fb-auth
+      margin 20px
   #bottom
     clearfix()
     border-top 1px solid #bbc
@@ -86,8 +91,14 @@ bottom-height = 270px
       border-top 1px solid #fff
       cursor pointer
       background #f9f9ff
+      font-size 13px
+      padding 3px
       &:hover
         background #fcfcff
+      img
+        vertical-align middle
+        width 25px
+        padding-right 8px
     .active
        vertical-gradient #78e #67d
        color #fff
@@ -104,6 +115,13 @@ message-input-height = 37px
     scrollable()
     height bottom-height - message-input-height
     border-bottom 1px solid #bbc
+    .message
+      padding 5px
+      font-size 13px
+      img
+        width 25px
+        vertical-align middle
+        padding-right 10px
   #message-input-wrap
     border-top 1px solid #eef
     height message-input-height
