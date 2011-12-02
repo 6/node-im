@@ -1,8 +1,13 @@
+fs = require 'fs'
 express = require 'express'
 
 port_number = 3000
 
-app = express.createServer()
+app = express.createServer(
+  key: fs.readFileSync("certs/node-im.key")
+  cert: fs.readFileSync("certs/node-im.crt")
+)
+
 app.configure(() ->
   app.set "views", "#{__dirname}/views"
   app.set "view engine", "jade"

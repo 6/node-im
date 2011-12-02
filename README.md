@@ -33,6 +33,12 @@ Modify the upstart conf file to point to this directory (see line 11 of `node-im
     chmod u+x node-im.conf
     sudo mv node-im.conf /etc/init/
 
+Generate self-signed SSL certificate
+
+    cd certs
+    openssl genrsa -out node-im.key 1024    
+    openssl req -new -key node-im.key -x509 -out node-im.crt -days 999
+
 Usage
 =====
 Starting/stopping the application is very easy with upstart.
