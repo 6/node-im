@@ -4,8 +4,8 @@ express = require 'express'
 port_number = 3000
 
 app = express.createServer(
-  key: fs.readFileSync("certs/node-im.key")
-  cert: fs.readFileSync("certs/node-im.crt")
+  key: fs.readFileSync("#{__dirname}/certs/node-im.key")
+  cert: fs.readFileSync("#{__dirname}/certs/node-im.crt")
 )
 
 app.configure(() ->
