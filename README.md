@@ -1,3 +1,9 @@
+What is this?
+=============
+node-im is a Facebook Chat client that I built to learn about XMPP.
+
+<img src="https://github.com/6/node-im/raw/master/screenshot.png">
+
 Prerequisites
 =============
 Install expat libraries
