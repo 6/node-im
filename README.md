@@ -60,3 +60,9 @@ To stop
 To see the status
 
     sudo status node-im
+
+Config
+======
+BOSH server can be configured in the `bosh.js.conf` file (default port 5280).
+
+The web server's port can be changed in `web_server.coffee` (default port 3000).
